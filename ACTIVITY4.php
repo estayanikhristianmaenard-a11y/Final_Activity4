@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!DOCTYPE html>
-<html lang="en">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gold Conversion Calculator UI</title>
@@ -230,8 +227,17 @@
 
 </div>
 
-</body>
-</html>
+<div class ="Formula-container" style = "display:none;">
+   <?php
+   $grams = $_POST['gold_weight'] ?? 0;
+   $price_per_gram = $_POST['gold_value'] ?? 0;
 
+   $ounces = $grams / 28.3495;
+   $kilograms = $grams / 1000;
+   $total_value = $grams * $price_per_gram;
+
+
+?>
+    </div>
 </body>
 </html>
