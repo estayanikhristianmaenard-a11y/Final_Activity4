@@ -13,7 +13,6 @@
         }
 
         body {
-            /* A fresher, cleaner cyan */
             background-color: #48cae4; 
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             display: flex;
@@ -30,6 +29,11 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+
+            /* --- Added Border --- */
+            border: 4px solid #1a1f36;
+            border-radius: 12px;
+            padding: 20px;
         }
 
         /* --- Header Section --- */
@@ -73,13 +77,13 @@
         .input-wrapper {
             position: relative;
             width: 90%;
+            margin-bottom: 12px;
         }
 
         .custom-input {
             width: 100%;
-            background-color: #9eaef0; /* Lighter violet */
+            background-color: #9eaef0;
             border: 2px solid transparent;
-            /* 3D Bottom Shadow Effect */
             border-bottom: 7px solid #5a669e; 
             border-radius: 16px;
             padding: 16px 20px;
@@ -93,14 +97,13 @@
         }
 
         .custom-input::placeholder {
-            color: #ffffff; /* Adjusted placeholder so it stands out on the lighter violet */
+            color: #ffffff;
             font-weight: 400;
             opacity: 0.8;
         }
 
-        /* Fluid Interaction: Input Focus */
         .custom-input:focus {
-            background-color: #b3c0f5; /* Even lighter violet on focus */
+            background-color: #b3c0f5;
             border-color: #ffffff;
             transform: translateY(-2px);
             box-shadow: 0 8px 15px rgba(0,0,0,0.1);
@@ -110,12 +113,12 @@
         .btn-wrapper {
             position: relative;
             width: 65%;
-            margin: 10px auto; /* Centers the button */
+            margin: 10px auto;
         }
 
         .calc-btn {
             width: 100%;
-            background-color: #9eaef0; /* Lighter violet */
+            background-color: #9eaef0;
             border: none;
             border-bottom: 7px solid #5a669e;
             border-radius: 12px;
@@ -132,17 +135,15 @@
             transition: all 0.1s ease-in-out;
         }
 
-        /* Fluid Interaction: Button Hover & Press */
         .calc-btn:hover {
-            background-color: #b3c0f5; /* Even lighter violet on hover */
+            background-color: #b3c0f5;
             color: #1a1f36;
         }
 
         .calc-btn:active {
-            /* Pushes the button down by reducing the bottom border */
             transform: translateY(4px);
             border-bottom-width: 3px; 
-            margin-bottom: 4px; /* Compensates for the height change */
+            margin-bottom: 4px;
         }
 
         /* --- Neo-Brutalist Output Box --- */
@@ -151,11 +152,10 @@
             margin-top: 30px;
         }
 
-        /* Main White Box */
         .output-box {
             position: relative;
             background-color: #ffffff;
-            border: 4px solid #1a1f36; /* Clean, bold black border */
+            border: 4px solid #1a1f36;
             border-radius: 14px;
             padding: 25px 20px;
             z-index: 2;
@@ -203,41 +203,60 @@
         </div>
     </div>
 
-    <div class="input-wrapper">
-        <input type="text" class="custom-input" placeholder="Enter Gold Weight">
-    </div>
-    
-    <div class="input-wrapper">
-        <input type="text" class="custom-input" placeholder="Enter Gold Value">
-    </div>
+    <!-- Form so PHP can receive POST values -->
+    <form method="post">
+        <div class="input-wrapper">
+            <input type="number" name="gold_weight" id="gold_weight" class="custom-input" placeholder="Enter Gold Weight (Grams)" step="any" required value="<?php echo isset($_POST['gold_weight']) ? htmlspecialchars($_POST['gold_weight']) : ''; ?>">
+        </div>
+        
+        <div class="input-wrapper">
+            <input type="number" name="gold_value" id="gold_value" class="custom-input" placeholder="Enter Gold Value" step="any" required value="<?php echo isset($_POST['gold_value']) ? htmlspecialchars($_POST['gold_value']) : ''; ?>">
+        </div>
 
-    <div class="btn-wrapper">
-        <button class="calc-btn">Calculate</button>
-    </div>
+        <div class="btn-wrapper">
+            <button type="submit" class="calc-btn">Calculate</button>
+        </div>
+    </form>
 
     <div class="output-container">
         <div class="output-box">
             <div>
-                <div class="result-row">Equivalent to Ounces:</div>
-                <div class="result-row">Equivalent to kilograms:</div>
+                <div class="result-row">
+                    Equivalent to Ounces:  
+                    <?php 
+                        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                            $grams = $_POST['gold_weight'] ?? 0;
+                            $price_per_gram = $_POST['gold_value'] ?? 0;
+
+                            $ounces = $grams / 28.3495;
+                            $kilograms = $grams / 1000;
+                            $total_value = $grams * $price_per_gram;
+
+                            echo number_format($ounces, 4);
+                        }
+                    ?>
+                </div>
+                <div class="result-row">
+                    Equivalent to Kilograms:  
+                    <?php 
+                        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                            echo number_format($kilograms, 4);
+                        }
+                    ?>
+                </div>
             </div>
-            <div class="total-row">Total Gold Value:</div>
+            <div class="total-row">
+                Total Gold Value:  
+                <?php 
+                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                        echo number_format($total_value, 2);
+                    }
+                ?>
+            </div>
         </div>
     </div>
 
 </div>
 
-<div class ="Formula-container" style = "display:none;">
-   <?php
-   $grams = $_POST['gold_weight'] ?? 0;
-   $price_per_gram = $_POST['gold_value'] ?? 0;
-
-   $ounces = $grams / 28.3495;
-   $kilograms = $grams / 1000;
-   $total_value = $grams * $price_per_gram;
-
-
-?>
-    </div>
 </body>
 </html>
