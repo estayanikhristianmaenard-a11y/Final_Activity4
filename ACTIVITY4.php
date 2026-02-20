@@ -77,7 +77,7 @@
         .input-wrapper {
             position: relative;
             width: 90%;
-            margin-bottom: 12px;
+            margin-bottom: 12px; /* Added spacing between input bars */
         }
 
         .custom-input {
@@ -225,13 +225,21 @@
                     Equivalent to Ounces:  
                     <?php 
                         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                            $grams = $_POST['gold_weight'] ?? 0;
-                            $price_per_gram = $_POST['gold_value'] ?? 0;
+                            // Get values from form
+                            $grams = $_POST['gold_weight'] ?? 0;          // Gold weight in grams
+                            $price_per_gram = $_POST['gold_value'] ?? 0;  // Price per gram
 
+                            // --- Formula Computations ---
+                            // Convert grams to ounces (1 ounce = 28.3495 grams)
                             $ounces = $grams / 28.3495;
+
+                            // Convert grams to kilograms (1 kilogram = 1000 grams)
                             $kilograms = $grams / 1000;
+
+                            // Calculate total gold value (grams * price per gram)
                             $total_value = $grams * $price_per_gram;
 
+                            // Display ounces with 4 decimal places
                             echo number_format($ounces, 4);
                         }
                     ?>
@@ -240,6 +248,7 @@
                     Equivalent to Kilograms:  
                     <?php 
                         if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                            // Display kilograms with 4 decimal places
                             echo number_format($kilograms, 4);
                         }
                     ?>
@@ -249,6 +258,7 @@
                 Total Gold Value:  
                 <?php 
                     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                        // Display total gold value with 2 decimal places
                         echo number_format($total_value, 2);
                     }
                 ?>
